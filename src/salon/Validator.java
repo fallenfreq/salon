@@ -12,11 +12,12 @@ class ValidationException extends RuntimeException {
   }
 }
 
+
 public class Validator {
 
   // Validator for comma-separated values with an additional validator
   public static <V> V[] validateCommaSeparatedString(
-      String input, Function<String, V> itemValidator) {
+    String input, Function<String, V> itemValidator) {
     String[] items = input.split(",");
     @SuppressWarnings("unchecked")
     V[] results = (V[]) new Object[items.length];
@@ -49,7 +50,7 @@ public class Validator {
   // Validator for checking a valid phone number using regex
   public static String isValidPhoneNumber(String phoneNumber) {
     return Pattern.compile("^[\\d\\s-()+]{7,20}$").matcher(phoneNumber).matches()
-            && phoneNumber.chars().filter(Character::isDigit).count() >= 7
+      && phoneNumber.chars().filter(Character::isDigit).count() >= 7
         ? phoneNumber
         : null;
   }

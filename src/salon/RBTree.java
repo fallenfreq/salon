@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  * @param <S> the type of values in the map
  */
 class IndexTree<PK extends Comparable<? super PK>, IK extends Comparable<? super IK>, S>
-    extends TreeMap<String, S> {
+  extends TreeMap<String, S> {
   private static final long serialVersionUID = 1L;
   private final Function<Map.Entry<PK, S>, String> keyExtractor;
   // map of index key to primary key
@@ -30,7 +30,7 @@ class IndexTree<PK extends Comparable<? super PK>, IK extends Comparable<? super
    * @param comparator comparator to determine the order of the keys
    */
   public IndexTree(
-      Function<Map.Entry<PK, S>, IK> keyExtractor, Comparator<? super String> comparator) {
+    Function<Map.Entry<PK, S>, IK> keyExtractor, Comparator<? super String> comparator) {
     super(comparator);
     // the key is the primary key so usually a unique id
     this.keyExtractor = map -> keyExtractor.apply(map) + "-" + map.getKey();
@@ -63,8 +63,9 @@ class IndexTree<PK extends Comparable<? super PK>, IK extends Comparable<? super
   }
 }
 
+
 class RBTree<K extends Comparable<? super K>, V extends HasPrimaryKey<K>>
-    extends AbstarctTree<K, V> {
+  extends AbstarctTree<K, V> {
   private Map<String, IndexTree<?, ?, V>> indexes = new HashMap<>();
 
   RBTree() {
@@ -79,7 +80,7 @@ class RBTree<K extends Comparable<? super K>, V extends HasPrimaryKey<K>>
   // you can just get it from primaryTree. The indexes with non unique keys are just good for
   // listing things in order rather than for lookups
   public <PK extends Comparable<? super PK>, IK extends Comparable<? super IK>> V get(
-      IK key, String indexName) {
+    IK key, String indexName) {
     IndexTree<PK, IK, V> index = this.getIndex(indexName);
     return index.get(key + "-" + index.getPrimaryKey(key));
   }
@@ -89,16 +90,16 @@ class RBTree<K extends Comparable<? super K>, V extends HasPrimaryKey<K>>
     V oldValue = this.getPrimaryStore().put(key, value);
     for (String indexName : indexes.keySet()) {
       updateIndex(
-          indexName,
-          new AbstractMap.SimpleEntry<K, V>(key, oldValue),
-          new AbstractMap.SimpleEntry<K, V>(key, value));
+        indexName,
+        new AbstractMap.SimpleEntry<K, V>(key, oldValue),
+        new AbstractMap.SimpleEntry<K, V>(key, value));
     }
     return oldValue;
   }
 
   @SuppressWarnings("unchecked")
   private <PK extends Comparable<? super PK>, IK extends Comparable<? super IK>> void updateIndex(
-      String indexName, Map.Entry<PK, V> oldValueEntry, Map.Entry<PK, V> newValueEntry) {
+    String indexName, Map.Entry<PK, V> oldValueEntry, Map.Entry<PK, V> newValueEntry) {
     IndexTree<PK, IK, V> index = (IndexTree<PK, IK, V>) indexes.get(indexName);
     Function<Map.Entry<PK, V>, String> keyExtractor = index.getKeyExtractor();
     String indexKey = keyExtractor.apply(newValueEntry);
@@ -114,15 +115,15 @@ class RBTree<K extends Comparable<? super K>, V extends HasPrimaryKey<K>>
   }
 
   @SuppressWarnings("unchecked")
-  public <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>>
-      IndexTree<MK, KK, V> saveIndex(IndexTree<MK, KK, V> index, String indexName) {
+  public <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>> IndexTree<MK, KK, V> saveIndex(
+    IndexTree<MK, KK, V> index, String indexName) {
     return (IndexTree<MK, KK, V>) indexes.put(indexName, index);
   }
 
   // Get index by indexName
   @SuppressWarnings("unchecked")
-  public <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>>
-      IndexTree<MK, KK, V> getIndex(String indexName) {
+  public <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>> IndexTree<MK, KK, V> getIndex(
+    String indexName) {
     return (IndexTree<MK, KK, V>) indexes.get(indexName);
   }
 

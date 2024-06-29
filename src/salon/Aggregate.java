@@ -38,15 +38,16 @@ class Result<V, R> {
   }
 }
 
+
 class Aggregate<GK extends Comparable<? super GK>, V, R> extends AbstarctTree<GK, Result<V, R>> {
   private R startValue;
   private BiFunction<V, Integer, GK> getGroupByKey;
   private TriFunction<R, V, Aggregate<GK, V, R>, R> action;
 
   Aggregate(
-      R startValue,
-      BiFunction<V, Integer, GK> getGroupByKey,
-      TriFunction<R, V, Aggregate<GK, V, R>, R> action) {
+    R startValue,
+    BiFunction<V, Integer, GK> getGroupByKey,
+    TriFunction<R, V, Aggregate<GK, V, R>, R> action) {
     super(new HashMap<GK, Result<V, R>>());
     this.getGroupByKey = getGroupByKey;
     this.action = action;

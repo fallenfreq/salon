@@ -8,9 +8,11 @@ interface TriFunction<T, U, V, R> {
   R apply(T t, U u, V v);
 }
 
+
 interface HasPrimaryKey<K> {
   K getPrimaryKey();
 }
+
 
 class Service implements HasPrimaryKey<Integer> {
   private Integer serviceId;
@@ -53,6 +55,7 @@ class Service implements HasPrimaryKey<Integer> {
     return "\n" + toHeaderString() + toBodyString();
   }
 }
+
 
 class Stylist implements HasPrimaryKey<Integer> {
   private Integer stylistId;
@@ -97,7 +100,7 @@ class Stylist implements HasPrimaryKey<Integer> {
 
   public String toBodyString() {
     return String.format(
-        "   | %-5s | %-15s | %-15s |%n", stylistId, stylistName, "£" + totalEarnings);
+      "   | %-5s | %-15s | %-15s |%n", stylistId, stylistName, "£" + totalEarnings);
   }
 
   @Override
@@ -105,6 +108,7 @@ class Stylist implements HasPrimaryKey<Integer> {
     return "\n" + toHeaderString() + toBodyString();
   }
 }
+
 
 class Booking implements HasPrimaryKey<Integer> {
   private Integer bookingId;
@@ -142,13 +146,13 @@ class Booking implements HasPrimaryKey<Integer> {
 
   public String toHeaderString() {
     return String.format(
-        "   | %-5s | %-10s | %-10s | %-15s |%n", "ID", "Client ID", "Stylist ID", "Service IDs");
+      "   | %-5s | %-10s | %-10s | %-15s |%n", "ID", "Client ID", "Stylist ID", "Service IDs");
   }
 
   public String toBodyString() {
     return String.format(
-        "   | %-5s | %-10s | %-10s | %-15s |%n",
-        bookingId, clientId, stylistId, Arrays.toString(serviceIds));
+      "   | %-5s | %-10s | %-10s | %-15s |%n",
+      bookingId, clientId, stylistId, Arrays.toString(serviceIds));
   }
 
   @Override
@@ -156,6 +160,7 @@ class Booking implements HasPrimaryKey<Integer> {
     return "\n" + toHeaderString() + toBodyString();
   }
 }
+
 
 // Client class representing client details
 class Client implements HasPrimaryKey<Integer> {
@@ -204,12 +209,12 @@ class Client implements HasPrimaryKey<Integer> {
 
   public String toHeaderString() {
     return String.format(
-        "   | %-5s | %-15s | %-15s | %-15s |%n", "ID", "First Name", "Last Name", "Phone");
+      "   | %-5s | %-15s | %-15s | %-15s |%n", "ID", "First Name", "Last Name", "Phone");
   }
 
   public String toBodyString() {
     return String.format(
-        "   | %-5s | %-15s | %-15s | %-15s |%n", clientId, firstName, lastName, phone);
+      "   | %-5s | %-15s | %-15s | %-15s |%n", clientId, firstName, lastName, phone);
   }
 
   @Override
@@ -217,6 +222,7 @@ class Client implements HasPrimaryKey<Integer> {
     return "\n" + toHeaderString() + toBodyString();
   }
 }
+
 
 class SalonData {
   RBTree<Integer, Service> serviceTree = new RBTree<>();
@@ -286,21 +292,21 @@ class SalonData {
 
   public Stylist lowestEarnings() {
     Aggregate<String, Result<Booking, Integer>, Result<Booking, Integer>> aggragate =
-        bookingTree
-            .aggregate(
-                0,
-                (b, i) -> b.getStylistId(),
-                (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
-            .aggregate(
-                null,
-                (b, i) -> "min",
-                (acc, result) -> {
-                  if (acc == null || result.getAccumulator() <= acc.getAccumulator()) {
-                    return result;
-                  } else {
-                    return acc;
-                  }
-                });
+      bookingTree
+        .aggregate(
+          0,
+          (b, i) -> b.getStylistId(),
+          (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
+        .aggregate(
+          null,
+          (b, i) -> "min",
+          (acc, result) -> {
+            if (acc == null || result.getAccumulator() <= acc.getAccumulator()) {
+              return result;
+            } else {
+              return acc;
+            }
+          });
 
     Integer lowestStylistId = aggragate.get("min").getAccumulator().getValue(0).getStylistId();
     return stylistTree.get(lowestStylistId);
@@ -309,38 +315,38 @@ class SalonData {
   // Method to count the total number of bookings each stylist has completed
   public Aggregate<Integer, Booking, Integer> countStylistBookings() {
     return bookingTree.aggregate(
-        0, (b, i) -> stylistTree.get(b.getStylistId()).getStylistId(), (acc, b) -> acc + 1);
+      0, (b, i) -> stylistTree.get(b.getStylistId()).getStylistId(), (acc, b) -> acc + 1);
   }
 
   public Aggregate<Integer, Booking, Aggregate<Integer, Booking, Integer>> countStylistsClients() {
     return bookingTree.aggregate(
-        null,
-        (b, i) -> b.getStylistId(),
-        (acc, b) -> {
-          if (acc == null) {
-            acc =
-                new Aggregate<Integer, Booking, Integer>(
-                    0, (b2, i) -> b2.getClientId(), (acc2, b2, agg) -> acc2 + 1);
-          }
-          acc.put(b);
-          return acc;
-        });
+      null,
+      (b, i) -> b.getStylistId(),
+      (acc, b) -> {
+        if (acc == null) {
+          acc =
+            new Aggregate<Integer, Booking, Integer>(
+              0, (b2, i) -> b2.getClientId(), (acc2, b2, agg) -> acc2 + 1);
+        }
+        acc.put(b);
+        return acc;
+      });
   }
 
   // Sort all clients by service cost using cached value on client (highest cost first)
   public IndexTree<Integer, Integer, Client> sortClientsServiceCostCached() {
     return clientTree.sort(
-        clientEntry -> clientEntry.getValue().getTotalSpend(), Comparator.reverseOrder());
+      clientEntry -> clientEntry.getValue().getTotalSpend(), Comparator.reverseOrder());
   }
 
   // Sort all clients by service cost (highest cost first) if there was no cache on client
   public IndexTree<Integer, Integer, Result<Booking, Integer>> sortClientsByServiceCost() {
     return bookingTree
-        .aggregate(
-            0,
-            (b, i) -> b.getClientId(),
-            (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
-        .sort(spendEntry -> spendEntry.getValue().getAccumulator(), Comparator.reverseOrder());
+      .aggregate(
+        0,
+        (b, i) -> b.getClientId(),
+        (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
+      .sort(spendEntry -> spendEntry.getValue().getAccumulator(), Comparator.reverseOrder());
   }
 
   public IndexTree<Integer, String, Client> sortClientsByLastName() {
@@ -350,67 +356,67 @@ class SalonData {
   // Method to calculate the total cost of each service type
   public Aggregate<Integer, Booking, Integer> calculateServiceRevenue() {
     return bookingTree.aggregate(
-        0,
-        (b, i) -> i == null ? 0 : b.getServiceIds()[i],
-        (acc, b, aggregate) -> {
-          Integer[] serviceIds = b.getServiceIds();
-          for (int i = 0; i < serviceIds.length; i++) {
-            aggregate.put(b, i, acc + serviceTree.get(serviceIds[i]).getServiceCost());
-          }
-          return acc;
-        });
+      0,
+      (b, i) -> i == null ? 0 : b.getServiceIds()[i],
+      (acc, b, aggregate) -> {
+        Integer[] serviceIds = b.getServiceIds();
+        for (int i = 0; i < serviceIds.length; i++) {
+          aggregate.put(b, i, acc + serviceTree.get(serviceIds[i]).getServiceCost());
+        }
+        return acc;
+      });
   }
 
   public Client findClientWithLowestServiceCost() {
     Aggregate<String, Booking, Booking> lowestCostBooking =
-        bookingTree.aggregate(
-            null, // set initial value to null
-            (b, i) -> "min", // set key to store the min value
-            (acc, b) -> { // keep track of the lowest
-              if (acc == null
-                  || calcTotalServicesCost(b.getServiceIds())
-                      <= calcTotalServicesCost(acc.getServiceIds())) {
-                return b;
-              } else {
-                return acc;
-              }
-            });
+      bookingTree.aggregate(
+        null, // set initial value to null
+        (b, i) -> "min", // set key to store the min value
+        (acc, b) -> { // keep track of the lowest
+          if (acc == null
+            || calcTotalServicesCost(b.getServiceIds()) <= calcTotalServicesCost(
+              acc.getServiceIds())) {
+            return b;
+          } else {
+            return acc;
+          }
+        });
     return clientTree.get(lowestCostBooking.get("min").getAccumulator().getClientId());
   }
 
   public Client findClientWithLowestTotalServiceCostCached() {
     Aggregate<String, Client, Client> lowestCostBooking =
-        clientTree.aggregate(
-            null, // set initial value to null
-            (c, i) -> "min", // set key to store the min value
-            (acc, c) -> { // keep track of the lowest
-              if (acc == null || c.getTotalSpend() <= acc.getTotalSpend()) {
-                return c;
-              } else {
-                return acc;
-              }
-            });
+      clientTree.aggregate(
+        null, // set initial value to null
+        (c, i) -> "min", // set key to store the min value
+        (acc, c) -> { // keep track of the lowest
+          if (acc == null || c.getTotalSpend() <= acc.getTotalSpend()) {
+            return c;
+          } else {
+            return acc;
+          }
+        });
 
     return lowestCostBooking.get("min").getAccumulator();
   }
 
   public Client findClientWithLowestTotalServiceCost() {
     Aggregate<String, Result<Booking, Integer>, Result<Booking, Integer>> aggragate =
-        bookingTree
-            .aggregate(
-                0,
-                (b, i) -> b.getClientId(),
-                (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
-            .aggregate(
-                null,
-                (b, i) -> "min",
-                (acc, result) -> {
-                  if (acc == null || result.getAccumulator() <= acc.getAccumulator()) {
-                    return result;
-                  } else {
-                    return acc;
-                  }
-                });
+      bookingTree
+        .aggregate(
+          0,
+          (b, i) -> b.getClientId(),
+          (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
+        .aggregate(
+          null,
+          (b, i) -> "min",
+          (acc, result) -> {
+            if (acc == null || result.getAccumulator() <= acc.getAccumulator()) {
+              return result;
+            } else {
+              return acc;
+            }
+          });
 
     Integer lowestSpendClientId = aggragate.get("min").getAccumulator().getValue(0).getClientId();
     return clientTree.get(lowestSpendClientId);
@@ -418,54 +424,54 @@ class SalonData {
 
   public Client findClientWithHighestServiceCost() {
     Aggregate<String, Booking, Booking> highestCostBooking =
-        bookingTree.aggregate(
-            null, // set initial value to null
-            (b, i) -> "max", // set key to store the max value
-            (acc, b) -> { // keep track of the highest
-              if (acc == null
-                  || calcTotalServicesCost(b.getServiceIds())
-                      > calcTotalServicesCost(acc.getServiceIds())) {
-                return b;
-              } else {
-                return acc;
-              }
-            });
+      bookingTree.aggregate(
+        null, // set initial value to null
+        (b, i) -> "max", // set key to store the max value
+        (acc, b) -> { // keep track of the highest
+          if (acc == null
+            || calcTotalServicesCost(b.getServiceIds()) > calcTotalServicesCost(
+              acc.getServiceIds())) {
+            return b;
+          } else {
+            return acc;
+          }
+        });
     return clientTree.get(highestCostBooking.get("max").getAccumulator().getClientId());
   }
 
   public Client findClientWithHighestTotalServiceCostCached() {
     Aggregate<String, Client, Client> highestCostClient =
-        clientTree.aggregate(
-            null, // set initial value to null
-            (c, i) -> "max", // set key to store the max value
-            (acc, c) -> { // keep track of the highest
-              if (acc == null || c.getTotalSpend() > acc.getTotalSpend()) {
-                return c;
-              } else {
-                return acc;
-              }
-            });
+      clientTree.aggregate(
+        null, // set initial value to null
+        (c, i) -> "max", // set key to store the max value
+        (acc, c) -> { // keep track of the highest
+          if (acc == null || c.getTotalSpend() > acc.getTotalSpend()) {
+            return c;
+          } else {
+            return acc;
+          }
+        });
 
     return highestCostClient.get("max").getAccumulator();
   }
 
   public Client findClientWithHighestTotalServiceCost() {
     Aggregate<String, Result<Booking, Integer>, Result<Booking, Integer>> aggragate =
-        bookingTree
-            .aggregate(
-                0,
-                (b, i) -> b.getClientId(),
-                (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
-            .aggregate(
-                null,
-                (b, i) -> "max",
-                (acc, result) -> {
-                  if (acc == null || result.getAccumulator() > acc.getAccumulator()) {
-                    return result;
-                  } else {
-                    return acc;
-                  }
-                });
+      bookingTree
+        .aggregate(
+          0,
+          (b, i) -> b.getClientId(),
+          (acc, b) -> acc + calcTotalServicesCost(b.getServiceIds()))
+        .aggregate(
+          null,
+          (b, i) -> "max",
+          (acc, result) -> {
+            if (acc == null || result.getAccumulator() > acc.getAccumulator()) {
+              return result;
+            } else {
+              return acc;
+            }
+          });
 
     Integer highestSpendClientId = aggragate.get("max").getAccumulator().getValue(0).getClientId();
     return clientTree.get(highestSpendClientId);

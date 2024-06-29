@@ -17,25 +17,25 @@ abstract class AbstarctTree<K extends Comparable<? super K>, S> {
   }
 
   public <KK extends Comparable<? super KK>> IndexTree<K, KK, S> sort(
-      Function<Map.Entry<K, S>, KK> keyExtractor) {
+    Function<Map.Entry<K, S>, KK> keyExtractor) {
     return MapUtilities.sort(primaryStore, keyExtractor, Comparator.naturalOrder());
   }
 
   public <KK extends Comparable<? super KK>> IndexTree<K, KK, S> sort(
-      Function<Map.Entry<K, S>, KK> keyExtractor, Comparator<? super String> comparator) {
+    Function<Map.Entry<K, S>, KK> keyExtractor, Comparator<? super String> comparator) {
     return MapUtilities.sort(primaryStore, keyExtractor, comparator);
   }
 
   public <GK extends Comparable<? super GK>, R> Aggregate<GK, S, R> aggregate(
-      R startValue, BiFunction<S, Integer, GK> getGroupByKey, BiFunction<R, S, R> action) {
+    R startValue, BiFunction<S, Integer, GK> getGroupByKey, BiFunction<R, S, R> action) {
     return MapUtilities.aggregate(
-        primaryStore, startValue, getGroupByKey, (a, b, c) -> action.apply(a, b));
+      primaryStore, startValue, getGroupByKey, (a, b, c) -> action.apply(a, b));
   }
 
   public <GK extends Comparable<? super GK>, R> Aggregate<GK, S, R> aggregate(
-      R startValue,
-      BiFunction<S, Integer, GK> getGroupByKey,
-      TriFunction<R, S, Aggregate<GK, S, R>, R> action) {
+    R startValue,
+    BiFunction<S, Integer, GK> getGroupByKey,
+    TriFunction<R, S, Aggregate<GK, S, R>, R> action) {
     return MapUtilities.aggregate(primaryStore, startValue, getGroupByKey, action);
   }
 

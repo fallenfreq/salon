@@ -40,12 +40,11 @@ public final class MapUtilities {
    * @param <R> the type of the result of the aggregation
    * @return an Aggregate object containing the grouped results
    */
-  public static <GK extends Comparable<? super GK>, K extends Comparable<? super K>, S, R>
-      Aggregate<GK, S, R> aggregate(
-          Map<K, S> map,
-          R startValue,
-          BiFunction<S, Integer, GK> getGroupByKey,
-          BiFunction<R, S, R> action) {
+  public static <GK extends Comparable<? super GK>, K extends Comparable<? super K>, S, R> Aggregate<GK, S, R> aggregate(
+    Map<K, S> map,
+    R startValue,
+    BiFunction<S, Integer, GK> getGroupByKey,
+    BiFunction<R, S, R> action) {
     return aggregate(map, startValue, getGroupByKey, (a, b, c) -> action.apply(a, b));
   }
 
@@ -56,19 +55,18 @@ public final class MapUtilities {
    * @param startValue the initial value for the aggregation
    * @param getGroupByKey function to extract the group-by key from the map values
    * @param action the action to apply for the aggregation, including the current state of the
-   *     aggregate
+   *        aggregate
    * @param <GK> the type of the group-by key
    * @param <K> the type of keys in the map
    * @param <S> the type of values in the map
    * @param <R> the type of the result of the aggregation
    * @return an Aggregate object containing the grouped results
    */
-  public static <GK extends Comparable<? super GK>, K extends Comparable<? super K>, S, R>
-      Aggregate<GK, S, R> aggregate(
-          Map<K, S> map,
-          R startValue,
-          BiFunction<S, Integer, GK> getGroupByKey,
-          TriFunction<R, S, Aggregate<GK, S, R>, R> action) {
+  public static <GK extends Comparable<? super GK>, K extends Comparable<? super K>, S, R> Aggregate<GK, S, R> aggregate(
+    Map<K, S> map,
+    R startValue,
+    BiFunction<S, Integer, GK> getGroupByKey,
+    TriFunction<R, S, Aggregate<GK, S, R>, R> action) {
     Aggregate<GK, S, R> result = new Aggregate<>(startValue, getGroupByKey, action);
     for (S value : map.values()) {
       result.put(value);
@@ -86,8 +84,8 @@ public final class MapUtilities {
    * @param <S> the type of values in the map
    * @return an IndexTree sorted based on the extracted keys
    */
-  public static <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>, S>
-      IndexTree<MK, KK, S> sort(Map<MK, S> map, Function<Map.Entry<MK, S>, KK> keyExtractor) {
+  public static <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>, S> IndexTree<MK, KK, S> sort(
+    Map<MK, S> map, Function<Map.Entry<MK, S>, KK> keyExtractor) {
     return sort(map, keyExtractor, Comparator.naturalOrder());
   }
 
@@ -103,11 +101,10 @@ public final class MapUtilities {
    * @param <S> the type of values in the map
    * @return an IndexTree sorted based on the extracted keys
    */
-  public static <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>, S>
-      IndexTree<MK, KK, S> sort(
-          Map<MK, S> map,
-          Function<Map.Entry<MK, S>, KK> keyExtractor,
-          Comparator<? super String> comparator) {
+  public static <MK extends Comparable<? super MK>, KK extends Comparable<? super KK>, S> IndexTree<MK, KK, S> sort(
+    Map<MK, S> map,
+    Function<Map.Entry<MK, S>, KK> keyExtractor,
+    Comparator<? super String> comparator) {
     IndexTree<MK, KK, S> index = new IndexTree<MK, KK, S>(keyExtractor, comparator);
     for (Map.Entry<MK, S> entry : map.entrySet()) {
       String sortKey = index.getKeyExtractor().apply(entry);

@@ -22,131 +22,135 @@ public class Salon {
   public static void main(String[] args) {
     // Creating a secondary index by last name
     salonData.clientTree.saveIndex(
-        salonData.clientTree.<String>sort(clientEntry -> clientEntry.getValue().getLastName()),
-        "lastNameIndex");
+      salonData.clientTree.<String>sort(clientEntry -> clientEntry.getValue().getLastName()),
+      "lastNameIndex");
 
     salonData.stylistTree.saveIndex(
-        salonData.stylistTree.<String>sort(
-            stylistEntry -> stylistEntry.getValue().getStylistName()),
-        "stylistNameIndex");
+      salonData.stylistTree.<String>sort(
+        stylistEntry -> stylistEntry.getValue().getStylistName()),
+      "stylistNameIndex");
 
     salonData.clientTree.saveIndex(
-        salonData.clientTree.<Integer>sort(clientEntry -> clientEntry.getValue().getTotalSpend()),
-        "totalSpendIndex");
+      salonData.clientTree.<Integer>sort(clientEntry -> clientEntry.getValue().getTotalSpend()),
+      "totalSpendIndex");
 
     salonData.stylistTree.saveIndex(
-        salonData.stylistTree.<Integer>sort(
-            stylistEntry -> stylistEntry.getValue().getTotalEarnings()),
-        "totalEarningsIndex");
+      salonData.stylistTree.<Integer>sort(
+        stylistEntry -> stylistEntry.getValue().getTotalEarnings()),
+      "totalEarningsIndex");
 
     // Options for insert-client command
     Options insertClientOptions = new Options();
     insertClientOptions.addOption(
-        Option.builder("f")
-            .longOpt("first-name")
-            .desc("First name of the client")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("f")
+        .longOpt("first-name")
+        .desc("First name of the client")
+        .hasArg()
+        .required(true)
+        .build());
     insertClientOptions.addOption(
-        Option.builder("l")
-            .longOpt("last-name")
-            .desc("Last name of the client")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("l")
+        .longOpt("last-name")
+        .desc("Last name of the client")
+        .hasArg()
+        .required(true)
+        .build());
     insertClientOptions.addOption(
-        Option.builder("p")
-            .longOpt("phone")
-            .desc("Phone number of the client")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("p")
+        .longOpt("phone")
+        .desc("Phone number of the client")
+        .hasArg()
+        .required(true)
+        .build());
 
     // Options for insert-stylist command
     Options insertStylistOptions = new Options();
     insertStylistOptions.addOption(
-        Option.builder("n")
-            .longOpt("name")
-            .desc("Name of the stylist")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("n")
+        .longOpt("name")
+        .desc("Name of the stylist")
+        .hasArg()
+        .required(true)
+        .build());
     insertStylistOptions.addOption(
-        Option.builder("t")
-            .longOpt("title")
-            .desc("Title of the stylist")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("t")
+        .longOpt("title")
+        .desc("Title of the stylist")
+        .hasArg()
+        .required(true)
+        .build());
 
     // Options for insert-service command
     Options insertServiceOptions = new Options();
     insertServiceOptions.addOption(
-        Option.builder("s")
-            .longOpt("service")
-            .desc("Name of the service")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("s")
+        .longOpt("service")
+        .desc("Name of the service")
+        .hasArg()
+        .required(true)
+        .build());
     insertServiceOptions.addOption(
-        Option.builder("p")
-            .longOpt("price")
-            .desc("Price of the service in pounds")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("p")
+        .longOpt("price")
+        .desc("Price of the service in pounds")
+        .hasArg()
+        .required(true)
+        .build());
 
     // Options for insert-booking command
     Options insertBookingOptions = new Options();
     insertBookingOptions.addOption(
-        Option.builder("c")
-            .longOpt("client-id")
-            .desc("Client ID for the booking")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("c")
+        .longOpt("client-id")
+        .desc("Client ID for the booking")
+        .hasArg()
+        .required(true)
+        .build());
     insertBookingOptions.addOption(
-        Option.builder("s")
-            .longOpt("service-ids")
-            .desc("List of comma separated service ID's for the booking")
-            .hasArg()
-            .required(true)
-            .build());
+      Option.builder("s")
+        .longOpt("service-ids")
+        .desc("List of comma separated service ID's for the booking")
+        .hasArg()
+        .required(true)
+        .build());
 
     // Options for query command
     Options queryOptions = new Options();
     queryOptions.addOption(
-        Option.builder("a")
-            .longOpt("client-allocations")
-            .desc(
-                "Client allocations for a given stylist by name or pass no stylist name to see all allocations")
-            .hasArg()
-            .optionalArg(true)
-            .build());
+      Option.builder("a")
+        .longOpt("client-allocations")
+        .desc(
+          "Client allocations for a given stylist by name or pass no stylist name to see all allocations")
+        .hasArg()
+        .optionalArg(true)
+        .build());
     queryOptions.addOption(
-        Option.builder("c")
-            .longOpt("sort-client")
-            .desc("Sort clients by service-cost or last-name")
-            .hasArg()
-            .build());
+      Option.builder("c")
+        .longOpt("sort-client")
+        .desc("Sort clients by service-cost or last-name")
+        .hasArg()
+        .build());
     queryOptions.addOption(
-        Option.builder("i")
-            .longOpt("total-service-revenue")
-            .desc("Calculate total service revenue")
-            .build());
+      Option.builder("i")
+        .longOpt("total-service-revenue")
+        .desc("Calculate total service revenue")
+        .build());
     queryOptions.addOption(
-        Option.builder("h")
-            .longOpt("highest-spending-client")
-            .desc("Find highest spending client")
-            .build());
+      Option.builder("h")
+        .longOpt("highest-spending-client")
+        .desc("Find highest spending client")
+        .build());
     queryOptions.addOption(
-        Option.builder("b")
-            .longOpt("lowest-spending-client")
-            .desc("Find lowest spending client")
-            .build());
+      Option.builder("b")
+        .longOpt("lowest-spending-client")
+        .desc("Find lowest spending client")
+        .build());
     queryOptions.addOption(
-        Option.builder("l").longOpt("list").desc("List data from specific table").hasArg().build());
+      Option.builder("l")
+        .longOpt("list")
+        .desc("List data from specific table")
+        .hasArg()
+        .build());
 
     // Scanner for reading input
     Scanner scanner = new Scanner(System.in);
@@ -154,14 +158,13 @@ public class Salon {
     HelpFormatter formatter = new HelpFormatter();
 
     Runnable printHelp =
-        () ->
-            runPrintHelp(
-                formatter,
-                insertClientOptions,
-                insertStylistOptions,
-                insertServiceOptions,
-                insertBookingOptions,
-                queryOptions);
+      () -> runPrintHelp(
+        formatter,
+        insertClientOptions,
+        insertStylistOptions,
+        insertServiceOptions,
+        insertBookingOptions,
+        queryOptions);
 
     while (true) {
       System.out.print("Type help to see commands, demo to insert demo data or exit to quit > ");
@@ -260,7 +263,7 @@ public class Salon {
     String result = Validator.isValidStringLength(arg, 1, 70);
     if (result == null) {
       throw new ValidationException(
-          argName + " should be between 1 and 70 characters. You entered: " + arg);
+        argName + " should be between 1 and 70 characters. You entered: " + arg);
     }
     return result;
   }
@@ -269,11 +272,11 @@ public class Salon {
     Integer result = Validator.isValidNumberInRange(arg, 1, Integer.MAX_VALUE);
     if (result == null) {
       throw new ValidationException(
-          argName
-              + " should be an intger between 1 and "
-              + Integer.MAX_VALUE
-              + ". You entered: "
-              + arg);
+        argName
+          + " should be an intger between 1 and "
+          + Integer.MAX_VALUE
+          + ". You entered: "
+          + arg);
     }
     return result;
   }
@@ -282,7 +285,7 @@ public class Salon {
     V result = Validator.validateAllowedValues(arg, set);
     if (result == null) {
       throw new ValidationException(
-          argName + " should be one of these values " + set + ". You entered: " + arg);
+        argName + " should be one of these values " + set + ". You entered: " + arg);
     }
     return result;
   }
@@ -333,8 +336,8 @@ public class Salon {
 
     Integer clinetId = validInteger(clinetIdRaw, "client-id");
     Integer[] serviceIds =
-        Validator.validateCommaSeparatedString(
-            csvServiceIds, serviceId -> validInteger(serviceId, "Each csv of service-ids"));
+      Validator.validateCommaSeparatedString(
+        csvServiceIds, serviceId -> validInteger(serviceId, "Each csv of service-ids"));
     // TODO Check that the clinetId and serviceIds are in the system
     Booking booking = salonData.addBooking(clinetId, serviceIds);
     System.out.print("Booking added");
@@ -362,9 +365,9 @@ public class Salon {
         // TODO this is still using the default toString to print but the service data is accessible
         // on the object
         System.out.println(
-            "NOTICE: This is still using the default toString to print but the service data is accessible on the object.");
+          "NOTICE: This is still using the default toString to print but the service data is accessible on the object.");
         System.out.println(
-            "NOTICE: The data keys are client IDs the stylist has served and the result contains client info");
+          "NOTICE: The data keys are client IDs the stylist has served and the result contains client info");
         System.out.println("Client Allocations for " + stylistName);
         Stylist stylist = salonData.stylistTree.get(stylistName, "stylistNameIndex");
         if (stylist == null) {
@@ -375,9 +378,9 @@ public class Salon {
         // TODO this is still using the default toString to print but the service data is accessible
         // on the object
         System.out.println(
-            "NOTICE: This is still using the default toString to print but the service data is accessible on the object.");
+          "NOTICE: This is still using the default toString to print but the service data is accessible on the object.");
         System.out.println(
-            "NOTICE: The data keys are stylist ids and the values are nested data with keys of each client ID the stylist has served");
+          "NOTICE: The data keys are stylist ids and the values are nested data with keys of each client ID the stylist has served");
         System.out.println("All Client Allocations");
         System.out.print(salonData.countStylistsClients());
       }
@@ -387,7 +390,7 @@ public class Salon {
       // TODO this is still using the default toString to print
       System.out.println("NOTICE: This is still using the default toString to Print");
       System.out.println(
-          "NOTICE: The data keys are service IDs and the Result contains the service revenue");
+        "NOTICE: The data keys are service IDs and the Result contains the service revenue");
       System.out.println("Total Revenue by Service");
       System.out.print(salonData.calculateServiceRevenue());
     }
@@ -457,12 +460,12 @@ public class Salon {
   }
 
   private static void runPrintHelp(
-      HelpFormatter formatter,
-      Options insertClientOptions,
-      Options insertStylistOptions,
-      Options insertServiceOptions,
-      Options insertBookingOptions,
-      Options queryOptions) {
+    HelpFormatter formatter,
+    Options insertClientOptions,
+    Options insertStylistOptions,
+    Options insertServiceOptions,
+    Options insertBookingOptions,
+    Options queryOptions) {
     formatter.printHelp("insert-client", insertClientOptions);
     System.out.println("");
     formatter.printHelp("insert-stylist", insertStylistOptions);
